@@ -1,0 +1,9 @@
+#!/bin/sh
+
+gcc -g "$1"
+echo "Global variables found:"
+nm -l a.out | grep ":" | grep "[0-8] [^T]" | tee global.tmp | wc -l
+cat global.tmp
+echo "======================="
+awk -f style.awk $1
+
