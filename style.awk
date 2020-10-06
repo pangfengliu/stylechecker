@@ -5,6 +5,6 @@
 /\?/ {q += 1; print "? in" $0}
 /&&/ {a += 1; print "&& in" $0}
 /\|\|/ {o += 1; print "|| in" $0}
-/!(?!=)/ {n += 1; ; print "! in" $0}
+/!(?!=)/ {n += 1;  print "! in" $0}
 { if (len < length($0)) len = length($0) }
 END { print "The maximum line length is " len ; print "The estimated cyclomatic complexity is " f + w + i + c + q + a + o + n}
