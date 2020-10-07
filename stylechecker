@@ -1,15 +1,25 @@
 #!/bin/sh
 
-gcc -g "$1"
-echo "global variables found:"
-nm -l a.out | grep ":" | grep "[0-8] [^T]" | tee global.tmp | wc -l
-cat global.tmp
+preprocessed=`mktemp`.c
+gcc -E "$1" > $preprocessed
+gcc -g $preprocessed
+
+nmlist=`mktemp`
+global=`nm -l a.out | grep ":" | grep "[0-8] [^T]" | tee $nmlist | wc -l`
+echo "global variables found:" $global
+cat $nmlist
 echo "============================"
-echo "if case while for found:"
-grep -w -E "(if)|(case)|(while)|(for)" -o "$1" | wc -l
-grep -w -E "(if)|(case)|(while)|(for)" "$1" 
+cc1=`grep -w -E "(if)|(case)|(while)|(for)" -o $preprocessed | wc -l`
+echo "if case while for found:" $cc1
+grep -w -E "(if)|(case)|(while)|(for)" $preprocessed
 echo "============================"
-echo "? && || found:"
-grep -E "(\?)|(&&)|(\|\|)" -o "$1" | wc -l
-grep -E "(\?)|(&&)|(\|\|)" "$1"
+cc2=`grep -E "(\?)|(&&)|(\|\|)" -o $preprocessed | wc -l`
+echo "? && || found:" $cc2
+grep -E "(\?)|(&&)|(\|\|)" $preprocessed
+echo "============================"
+echo "estimated cyclomatic complexity: " $(( $cc1 + $cc2 ))
+echo "============================"
+goto=`grep -w -E "goto" -o $preprocessed | wc -l`
+echo "goto found:" $goto
+grep -w -E "goto" $preprocessed
 
