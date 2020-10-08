@@ -1,6 +1,8 @@
 #!/bin/sh
 
 filename=$1
+# ## removes the longest matching prefix as *.
+# and leaves the suffix
 suffix=${filename##*.}
 echo "suffix" $suffix
 
