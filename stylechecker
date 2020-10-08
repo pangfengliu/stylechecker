@@ -1,8 +1,23 @@
 #!/bin/sh
 
+filename=$1
+suffix=${filename##*.}
+echo "suffix" $suffix
+
+if [ $suffix = "c" ]
+then
+    compiler="gcc"
+elif [ $suffix = "cc" ]
+then
+    compiler="g++"
+else
+    echo "unknown suffix" $suffix
+    exit
+fi
+     
 preprocessed=`mktemp`.c
-gcc -E "$1" > $preprocessed
-gcc -g $preprocessed
+$compiler -E "$1" > $preprocessed
+$compiler -g $preprocessed
 
 nmlist=`mktemp`
 global=`nm -l a.out | grep ":" | grep "[0-8] [^T]" | tee $nmlist | wc -l`
