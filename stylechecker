@@ -11,17 +11,17 @@ then
     compiler="gcc"
     preprocessed=`mktemp`.c
     $compiler -E "$filename" > $preprocessed
-    trimed=$preprocessed
+    trimmed=$preprocessed
 elif [ $suffix = "cc" ]
 then
     compiler="g++"
     preprocessed=`mktemp`.cc
-    trimed=`mktemp`.cc
+    trimmed=`mktemp`.cc
     $compiler -E "$filename" > $preprocessed
     # __ioinit appears to be the last part of included file
     start=`grep -n "__ioinit" $preprocessed | grep -o -E "[0-9]*"`
     echo "trime starts at line" $start
-    tail -n +$start $preprocessed > $trimed
+    tail -n +$start $preprocessed > $trimmed
 else
     echo "unknown suffix" $suffix
     exit
@@ -33,19 +33,19 @@ global=`nm -l a.out | grep ":" | grep "[0-8] [^T]" | tee $nmlist | wc -l`
 echo "global variables found:" $global
 cat $nmlist
 echo "============================"
-cc1=`grep -w -E "(if)|(case)|(while)|(for)" -o $trimed | wc -l`
+cc1=`grep -w -E "(if)|(case)|(while)|(for)" -o $trimmed | wc -l`
 echo "if case while for found:" $cc1
-grep -w -E "(if)|(case)|(while)|(for)" $trimed
+grep -w -E "(if)|(case)|(while)|(for)" $trimmed
 echo "============================"
-cc2=`grep -E "(\?)|(&&)|(\|\|)" -o $trimed | wc -l`
+cc2=`grep -E "(\?)|(&&)|(\|\|)" -o $trimmed | wc -l`
 echo "? && || found:" $cc2
-grep -E "(\?)|(&&)|(\|\|)" $trimed
+grep -E "(\?)|(&&)|(\|\|)" $trimmed
 echo "============================"
 echo "estimated cyclomatic complexity:" $(( $cc1 + $cc2 ))
 echo "============================"
-goto=`grep -w -E "goto" -o $trimed | wc -l`
+goto=`grep -w -E "goto" -o $trimmed | wc -l`
 echo "goto found:" $goto
-grep -w -E "goto" $trimed
+grep -w -E "goto" $trimmed
 echo "============================"
 longest=`awk ' { if ( length > x ) { x = length} }END{ print x }' $filename`
 echo "the lenght of the longest line:" $longest
