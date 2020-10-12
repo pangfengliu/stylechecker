@@ -41,9 +41,12 @@ cc2=`grep -E "(\?)|(&&)|(\|\|)" -o $trimed | wc -l`
 echo "? && || found:" $cc2
 grep -E "(\?)|(&&)|(\|\|)" $trimed
 echo "============================"
-echo "estimated cyclomatic complexity: " $(( $cc1 + $cc2 ))
+echo "estimated cyclomatic complexity:" $(( $cc1 + $cc2 ))
 echo "============================"
 goto=`grep -w -E "goto" -o $trimed | wc -l`
 echo "goto found:" $goto
 grep -w -E "goto" $trimed
+echo "============================"
+longest=`awk ' { if ( length > x ) { x = length} }END{ print x }' $filename`
+echo "the lenght of the longest line:" $longest
 
