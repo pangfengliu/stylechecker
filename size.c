@@ -2,6 +2,7 @@
 
 int initGlobalData[100] = {1};
 int uninitGlobalData;
+static int array[100];
 
 int main()
 {
