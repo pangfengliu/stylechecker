@@ -18,12 +18,10 @@ elif [ $suffix = "cc" ]
 then
     compiler="g++"
     preprocessed=`mktemp`.cc
-    trimmed=`mktemp`.cc
-    $compiler -E "$filename" > $preprocessed
-    # __ioinit appears to be the last part of included file
-    start=`grep -n "__ioinit" $preprocessed | grep -o -E "[0-9]*"`
-    echo "trime starts at line" $start
-    tail -n +$start $preprocessed > $trimmed
+    includeremoved=`mktemp`.c
+    sed "s/#include\s*<.*>//" "$filename" > $includeremoved
+    $compiler -E $includeremoved > $preprocessed
+    trimmed=$preprocessed
 else
     echo "unknown suffix" $suffix
     exit
