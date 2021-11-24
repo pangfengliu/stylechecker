@@ -39,7 +39,7 @@ grep -w -E "(if)|(case)|(while)|(for)" $trimmed
 echo "============================"
 cc2=`grep -E "(\?)" -o $trimmed | wc -l`
 echo "? found:" $cc2
-grep -E "(\?)|(&&)|(\|\|)" $trimmed
+grep -E "(\?)" $trimmed
 echo "============================"
 echo "estimated cyclomatic complexity:" $(( $cc1 + $cc2 ))
 echo "============================"
