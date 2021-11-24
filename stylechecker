@@ -48,5 +48,5 @@ echo "goto found:" $goto
 grep -w -E "goto" $trimmed
 echo "============================"
 longest=`awk ' { if ( length > x ) { x = length} }END{ print x }' $filename`
-echo "the lenght of the longest line:" $longest
+echo "the length of the longest line:" $longest
 
