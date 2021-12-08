@@ -18,7 +18,7 @@ elif [ $suffix = "cc" ]
 then
     compiler="g++"
     preprocessed=`mktemp`.cc
-    includeremoved=`mktemp`.c
+    includeremoved=`mktemp`.cc
     sed "s/#include\s*<.*>//" "$filename" > $includeremoved
     $compiler -E $includeremoved > $preprocessed
     trimmed=$preprocessed
