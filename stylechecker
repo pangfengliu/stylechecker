@@ -1,17 +1,31 @@
 #!/bin/sh
 
 filename=$1
-# ## removes the longest matching prefix as *.
+
+asm=`grep -E "asm" -o $filename | wc -l`
+doublesharp=`grep -E "##" -o $filename | wc -l`
+
+echo $asm "asm found"
+echo $doublesharp "## found"
+
+if [ $asm -gt 0 ] | [ $doublesharp -gt 0 ] ; then
+   echo "Trying to temper the cyclomatic number checking during an examination is consider cheating."
+   echo "Your final grade will be F and your act wil be reported to the university for proper action."
+   exit
+fi
+
+# remove the longest matching prefix as *.
 # and leaves the suffix
 suffix=${filename##*.}
 echo "suffix" $suffix
+
 
 if [ $suffix = "c" ]
 then
     compiler="gcc"
     preprocessed=`mktemp`.c
     includeremoved=`mktemp`.c
-    sed "s/#include\s*<.*>//" "$filename" > $includeremoved
+    sed "s/#include\s*<[a-z]*.h>//" "$filename" > $includeremoved
     $compiler -E $includeremoved > $preprocessed
     trimmed=$preprocessed
 elif [ $suffix = "cc" ]
@@ -19,7 +33,7 @@ then
     compiler="g++"
     preprocessed=`mktemp`.cc
     includeremoved=`mktemp`.cc
-    sed "s/#include\s*<.*>//" "$filename" > $includeremoved
+    sed "s/#include\s*<[a-z]*>//" "$filename" > $includeremoved
     $compiler -E $includeremoved > $preprocessed
     trimmed=$preprocessed
 else
@@ -34,12 +48,13 @@ echo "global variables found:" $global
 cat $nmlist
 echo "============================"
 cc1=`grep -w -E "(if)|(case)|(while)|(for)" -o $trimmed | wc -l`
+
 echo "if case while for found:" $cc1
 grep -w -E "(if)|(case)|(while)|(for)" $trimmed
 echo "============================"
 cc2=`grep -E "(\?)" -o $trimmed | wc -l`
 echo "? found:" $cc2
-grep -E "(\?)|(&&)|(\|\|)" $trimmed
+grep -E "(\?)" $trimmed
 echo "============================"
 echo "estimated cyclomatic complexity:" $(( $cc1 + $cc2 ))
 echo "============================"
