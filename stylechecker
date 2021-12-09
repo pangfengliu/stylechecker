@@ -9,8 +9,8 @@ echo $asm "asm found"
 echo $doublesharp "## found"
 
 if [ $asm -gt 0 ] | [ $doublesharp -gt 0 ] ; then
-   echo "Trying to temper the cyclomatic number checking during an examination is consider cheating."
-   echo "Your final grade will be F and your act wil be reported to the university for proper action."
+   echo "Trying to temper the cyclomatic number checking during an examination is considered cheating." 
+   echo "Your final grade will be F, and we will report your actions to the university."
    exit
 fi
 
