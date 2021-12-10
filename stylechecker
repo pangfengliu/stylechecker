@@ -25,17 +25,19 @@ then
     compiler="gcc"
     preprocessed=`mktemp`.c
     includeremoved=`mktemp`.c
+    trimmed=`mktemp`.c
     sed "s/#include\s*<[a-z]*.h>//" "$filename" > $includeremoved
     $compiler -E $includeremoved > $preprocessed
-    trimmed=$preprocessed
+    sed -f remove-items $preprocessed > $trimmed
 elif [ $suffix = "cc" ]
 then
     compiler="g++"
     preprocessed=`mktemp`.cc
     includeremoved=`mktemp`.cc
+    trimmed=`mktemp`.cc
     sed "s/#include\s*<[a-z]*>//" "$filename" > $includeremoved
     $compiler -E $includeremoved > $preprocessed
-    trimmed=$preprocessed
+    sed -f remove-items $preprocessed > $trimmed
 else
     echo "unknown suffix" $suffix
     exit
@@ -46,6 +48,7 @@ nmlist=`mktemp`
 global=`nm -l a.out | grep ":" | grep "[0-8] [^T]" | awk '{sub(/^.*\//, "", $4); print $3 " in " $4}' | tee $nmlist | wc -l`
 echo "global variables found:" $global
 cat $nmlist
+
 echo "============================"
 cc1=`grep -w -E "(if)|(case)|(while)|(for)" -o $trimmed | wc -l`
 
